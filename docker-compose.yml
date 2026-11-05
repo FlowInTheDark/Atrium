@@ -6,7 +6,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-atrium}
       POSTGRES_DB: ${POSTGRES_DB:-atrium}
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data2
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-atrium}"]
       interval: 5s
@@ -29,7 +29,7 @@ services:
       # sign-in works; the owner sees a notice that logins are unencrypted.
       # A reverse proxy with HTTPS is strongly recommended.
     volumes:
-      - uploads:/app/uploads
+      - uploads:/app/uploads2
     depends_on:
       postgres:
         condition: service_healthy
