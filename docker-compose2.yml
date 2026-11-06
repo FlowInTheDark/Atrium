@@ -1,16 +1,37 @@
 services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-atrium}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in Coolify}
+      POSTGRES_DB: ${POSTGRES_DB:-atrium}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
   atrium:
     image: vibralabs/atrium:latest
-    ports:
-      - "127.0.0.1:8080:8080"
+    # Coolify's proxy reaches this port over the private Docker network.
+    # Do not publish host port 8080: Coolify's proxy already uses it.
+    expose:
+      - "8080"
     environment:
       USE_BUILT_IN_DB: "false"
-      DATABASE_URL: "postgresql://user:password@your-db-host:5432/atrium"
-      BETTER_AUTH_SECRET: "${BETTER_AUTH_SECRET:-openssl rand -base64 32}"
-      WEB_URL: "https://mijn.flowminate.io"
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in Coolify}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?Set BETTER_AUTH_SECRET in Coolify}
+      WEB_URL: ${WEB_URL:-https://mijn.flowminate.io}
     volumes:
-      - atrium-uploads:/app/uploads
+      - uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
 
 volumes:
-  atrium-uploads:
+  pgdata:
+  uploads:
