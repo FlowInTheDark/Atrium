@@ -11,6 +11,6 @@ services:
     volumes:
       - atrium-uploads:/app/uploads
     restart: unless-stopped
- 
+
 volumes:
   atrium-uploads:
