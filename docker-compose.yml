@@ -6,7 +6,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-atrium}
       POSTGRES_DB: ${POSTGRES_DB:-atrium}
     volumes:
-      - pgdata:/var/lib/postgresql/data2
+      - pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-atrium}"]
       interval: 5s
@@ -18,18 +18,18 @@ services:
     # Behind a tunnel or HTTPS proxy on the same machine, use "127.0.0.1:8080:8080"
     # so Atrium isn't reachable directly over plain HTTP (Docker bypasses ufw).
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     environment:
       DATABASE_URL: "postgresql://${POSTGRES_USER:-atrium}:${POSTGRES_PASSWORD:-atrium}@postgres:5432/${POSTGRES_DB:-atrium}"
-      BETTER_AUTH_SECRET: "${BETTER_AUTH_SECRET:-change-me-to-a-random-string-at-least-32-chars}"
+      BETTER_AUTH_SECRET: "${BETTER_AUTH_SECRET:-openssl rand -base64 32}"
       # The public URL users open Atrium at. Required: sign-in breaks without it
       # behind any domain or reverse proxy (Coolify, Cloudflare, Nginx, ...).
-      WEB_URL: "${WEB_URL:-http://localhost:8080}"
+      WEB_URL: "${WEB_URL:-https://mijn.flowminate.io:8080}"
       # Include the scheme. An http:// URL turns off Secure cookies so plain-HTTP
       # sign-in works; the owner sees a notice that logins are unencrypted.
       # A reverse proxy with HTTPS is strongly recommended.
     volumes:
-      - uploads:/app/uploads2
+      - uploads:/app/uploads
     depends_on:
       postgres:
         condition: service_healthy
