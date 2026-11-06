@@ -30,6 +30,16 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8080/api/health', {signal: AbortSignal.timeout(4000)}).then(async r => { const h = await r.json(); process.exit(r.ok && h.status === 'ok' && h.database === 'connected' ? 0 : 1); }).catch(() => process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
     restart: unless-stopped
 
 volumes:
