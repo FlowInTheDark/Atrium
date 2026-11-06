@@ -24,7 +24,7 @@ services:
       BETTER_AUTH_SECRET: "${BETTER_AUTH_SECRET:-openssl rand -base64 32}"
       # The public URL users open Atrium at. Required: sign-in breaks without it
       # behind any domain or reverse proxy (Coolify, Cloudflare, Nginx, ...).
-      WEB_URL: "${WEB_URL:-https://mijn.flowminate.io:8080}"
+      WEB_URL: "${WEB_URL:-https://mijn.flowminate.io:8080:8080}"
       # Include the scheme. An http:// URL turns off Secure cookies so plain-HTTP
       # sign-in works; the owner sees a notice that logins are unencrypted.
       # A reverse proxy with HTTPS is strongly recommended.
