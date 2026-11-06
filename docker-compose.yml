@@ -18,7 +18,7 @@ services:
     # Behind a tunnel or HTTPS proxy on the same machine, use "127.0.0.1:8080:8080"
     # so Atrium isn't reachable directly over plain HTTP (Docker bypasses ufw).
     ports:
-      - 127.0.0.1:8080:8080
+      - "${WEB_URL:-https://mijn.flowminate.io:8080:8080}"
     environment:
       DATABASE_URL: "postgresql://${POSTGRES_USER:-atrium}:${POSTGRES_PASSWORD:-atrium}@postgres:5432/${POSTGRES_DB:-atrium}"
       BETTER_AUTH_SECRET: "${BETTER_AUTH_SECRET:-openssl rand -base64 32}"
