@@ -1,0 +1,16 @@
+services:
+  atrium:
+    image: vibralabs/atrium:latest
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      USE_BUILT_IN_DB: "false"
+      DATABASE_URL: "postgresql://user:password@your-db-host:5432/atrium"
+      BETTER_AUTH_SECRET: "$(openssl rand -base64 32)"
+      WEB_URL: "https://mijn.flowminate.io"
+    volumes:
+      - atrium-uploads:/app/uploads
+    restart: unless-stopped
+
+volumes:
+  atrium-uploads:
